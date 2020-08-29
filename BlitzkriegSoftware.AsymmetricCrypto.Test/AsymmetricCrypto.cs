@@ -8,19 +8,16 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
     public class AsymmetricCrypto : IDisposable
     {
         bool disposed = false;
-        private string _keyPublic = string.Empty;
         private string _keyPrivate = string.Empty;
         private RSA rsa = RSA.Create();
         private UnicodeEncoding byteConverter = new UnicodeEncoding();
 
         private AsymmetricCrypto() { }
 
-        public AsymmetricCrypto(string keyPublic, string keyPrivate)
+        public AsymmetricCrypto( string keyPrivate)
         {
             _keyPrivate = KeyConverter( keyPrivate );
             rsa.ImportRSAPrivateKey(Convert.FromBase64String(_keyPrivate), out _);
-            //_keyPublic = KeyConverter(keyPublic );
-            //rsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(_keyPublic), out _);
         }
 
         private string KeyConverter(string key)
@@ -37,8 +34,11 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
             return cvt;
         }
 
+        public const int Max_Chars_Supported = 250;
+
         public string Encrypt(string text)
         {
+            if (text.Length > Max_Chars_Supported) throw new ArgumentOutOfRangeException(nameof(text), $"Text length of {text.Length} exceeds maximum of {Max_Chars_Supported}");
             byte[] dataToEncrypt = byteConverter.GetBytes(text);
             byte[] encryptedData = rsa.Encrypt(dataToEncrypt,RSAEncryptionPadding.Pkcs1);
             var cryptoText = Convert.ToBase64String(encryptedData);

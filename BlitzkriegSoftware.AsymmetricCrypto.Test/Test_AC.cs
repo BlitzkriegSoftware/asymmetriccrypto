@@ -1,5 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.IO;
+using System.Linq;
 
 namespace BlitzkriegSoftware.AsymmetricCrypto.Test
 {
@@ -10,14 +12,12 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
 
         private static TestContext _testContext;
         private static string PrivateKey;
-        private static string PublicKey;
 
         [ClassInitialize]
         public static void SetupTests(TestContext testContext)
         {
             _testContext = testContext;
             PrivateKey = File.ReadAllText(@".\rsa4096.private");
-            PublicKey = File.ReadAllText(@".\rsa4096.public");
         }
 
         #endregion
@@ -27,11 +27,55 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
         public void Simple_Test_1()
         {
             string expected = "xyz";
-            using (var cg = new AsymmetricCrypto(PublicKey, PrivateKey))
+            _testContext.WriteLine($"[{expected.Length}]: {expected}");
+
+            using (var cg = new AsymmetricCrypto(PrivateKey))
             {
                 var ct = cg.Encrypt(expected);
                 var pt = cg.Decrypt(ct);
+                Assert.AreEqual(expected, pt);
             }
+        }
+
+        [TestMethod]
+        [TestCategory("Unit")]
+        public void Simple_Test_2()
+        {
+            string expected = "The whole house is spinning because of a tornado.";
+            _testContext.WriteLine($"[{expected.Length}]: {expected}");
+
+            using (var cg = new AsymmetricCrypto(PrivateKey))
+            {
+                var ct = cg.Encrypt(expected);
+                var pt = cg.Decrypt(ct);
+                Assert.AreEqual(expected, pt);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Unit")]
+        public void Sizing_Test_1()
+        {
+            string expected = string.Empty;
+            for (int i = 1; i < 260; i++) {
+                expected = new string(Faker.Lorem.Letters(i).ToArray());
+                _testContext.WriteLine($"[{expected.Length}]: {expected}");
+
+                try
+                {
+                    using (var cg = new AsymmetricCrypto(PrivateKey))
+                    {
+                        var ct = cg.Encrypt(expected);
+                        var pt = cg.Decrypt(ct);
+                        Assert.AreEqual(expected, pt);
+                    }
+                } catch(ArgumentOutOfRangeException ex)
+                {
+                    _testContext.WriteLine($"{ex.Message}");
+                    break;
+                }
+            }
+            _testContext.WriteLine($"Maximim Length {expected.Length - 1}");
         }
 
     }
