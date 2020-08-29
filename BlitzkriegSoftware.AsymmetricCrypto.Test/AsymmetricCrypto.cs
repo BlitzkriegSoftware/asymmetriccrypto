@@ -7,20 +7,19 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
 {
     public class AsymmetricCrypto : IDisposable
     {
+        #region "Vars, Constants, Utility"
+        public const int MaxCharsSupported = 250;
+
+#pragma warning disable CA1805 // Do not initialize unnecessarily
         bool disposed = false;
-        private string _keyPrivate = string.Empty;
+#pragma warning restore CA1805 // To conform to dispose pattern
+
         private RSA rsa = RSA.Create();
-        private UnicodeEncoding byteConverter = new UnicodeEncoding();
 
-        private AsymmetricCrypto() { }
+        private readonly string _keyPrivate = string.Empty;
+        private readonly UnicodeEncoding byteConverter = new UnicodeEncoding();
 
-        public AsymmetricCrypto( string keyPrivate)
-        {
-            _keyPrivate = KeyConverter( keyPrivate );
-            rsa.ImportRSAPrivateKey(Convert.FromBase64String(_keyPrivate), out _);
-        }
-
-        private string KeyConverter(string key)
+        private static string KeyConverter(string key)
         {
             var lines = key.Split(
                 new[] { Environment.NewLine },
@@ -34,13 +33,26 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
             return cvt;
         }
 
-        public const int Max_Chars_Supported = 250;
+        #endregion
+
+        #region "CTOR"
+        private AsymmetricCrypto() { }
+
+        public AsymmetricCrypto(string keyPrivate)
+        {
+            if (string.IsNullOrWhiteSpace(keyPrivate)) throw new ArgumentNullException(nameof(keyPrivate));
+            _keyPrivate = KeyConverter(keyPrivate);
+            rsa.ImportRSAPrivateKey(Convert.FromBase64String(_keyPrivate), out _);
+        }
+
+        #endregion
 
         public string Encrypt(string text)
         {
-            if (text.Length > Max_Chars_Supported) throw new ArgumentOutOfRangeException(nameof(text), $"Text length of {text.Length} exceeds maximum of {Max_Chars_Supported}");
+            if (string.IsNullOrWhiteSpace(text)) throw new ArgumentNullException(nameof(text));
+            if (text.Length > MaxCharsSupported) throw new ArgumentOutOfRangeException(nameof(text), $"Text length of {text.Length} exceeds maximum of {MaxCharsSupported}");
             byte[] dataToEncrypt = byteConverter.GetBytes(text);
-            byte[] encryptedData = rsa.Encrypt(dataToEncrypt,RSAEncryptionPadding.Pkcs1);
+            byte[] encryptedData = rsa.Encrypt(dataToEncrypt, RSAEncryptionPadding.Pkcs1);
             var cryptoText = Convert.ToBase64String(encryptedData);
             return cryptoText;
         }
@@ -54,7 +66,6 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
         }
 
         #region "IDisposable"
-
         public void Dispose()
         {
             Dispose(true);

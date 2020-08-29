@@ -1,12 +1,11 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
-using System.Linq;
 
 namespace BlitzkriegSoftware.AsymmetricCrypto.Test
 {
     [TestClass]
-    public class Test_AC
+    public class TestAsymmetricCrypto
     {
         #region "Boilerplate"
 
@@ -24,7 +23,7 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
 
         [TestMethod]
         [TestCategory("Unit")]
-        public void Simple_Test_1()
+        public void SimpleTest1()
         {
             string expected = "xyz";
             _testContext.WriteLine($"[{expected.Length}]: {expected}");
@@ -39,7 +38,7 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
 
         [TestMethod]
         [TestCategory("Unit")]
-        public void Simple_Test_2()
+        public void SimpleTest2()
         {
             string expected = "The whole house is spinning because of a tornado.";
             _testContext.WriteLine($"[{expected.Length}]: {expected}");
@@ -54,7 +53,7 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
 
         [TestMethod]
         [TestCategory("Unit")]
-        public void Sizing_Test_1()
+        public void SizingTest1()
         {
             string expected = string.Empty;
             for (int i = 1; i < 260; i++) {
