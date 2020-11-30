@@ -28,7 +28,7 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
             string expected = "xyz";
             _testContext.WriteLine($"[{expected.Length}]: {expected}");
 
-            using (var cg = new AsymmetricCrypto(PrivateKey))
+            using (var cg = new AsymmetricCryptoHelper(PrivateKey))
             {
                 var ct = cg.Encrypt(expected);
                 var pt = cg.Decrypt(ct);
@@ -43,7 +43,7 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
             string expected = "The whole house is spinning because of a tornado.";
             _testContext.WriteLine($"[{expected.Length}]: {expected}");
 
-            using (var cg = new AsymmetricCrypto(PrivateKey))
+            using (var cg = new AsymmetricCryptoHelper(PrivateKey))
             {
                 var ct = cg.Encrypt(expected);
                 var pt = cg.Decrypt(ct);
@@ -62,7 +62,7 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
 
                 try
                 {
-                    using (var cg = new AsymmetricCrypto(PrivateKey))
+                    using (var cg = new AsymmetricCryptoHelper(PrivateKey))
                     {
                         var ct = cg.Encrypt(expected);
                         var pt = cg.Decrypt(ct);

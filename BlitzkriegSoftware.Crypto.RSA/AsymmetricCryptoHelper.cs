@@ -3,9 +3,10 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BlitzkriegSoftware.AsymmetricCrypto.Test
+namespace BlitzkriegSoftware.Crypto.RSA
 {
-    public class AsymmetricCrypto : IDisposable
+
+    public class AsymmetricCryptoHelper : IDisposable
     {
         #region "Vars, Constants, Utility"
         public const int MaxCharsSupported = 250;
@@ -14,7 +15,7 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
         bool disposed = false;
 #pragma warning restore CA1805 // To conform to dispose pattern
 
-        private RSA rsa = RSA.Create();
+        private System.Security.Cryptography.RSA rsa = System.Security.Cryptography.RSA.Create();
 
         private readonly string _keyPrivate = string.Empty;
         private readonly UnicodeEncoding byteConverter = new UnicodeEncoding();
@@ -36,9 +37,9 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
         #endregion
 
         #region "CTOR"
-        private AsymmetricCrypto() { }
+        private AsymmetricCryptoHelper() { }
 
-        public AsymmetricCrypto(string keyPrivate)
+        public AsymmetricCryptoHelper(string keyPrivate)
         {
             if (string.IsNullOrWhiteSpace(keyPrivate)) throw new ArgumentNullException(nameof(keyPrivate));
             _keyPrivate = KeyConverter(keyPrivate);
@@ -87,5 +88,6 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
 
         #endregion
     }
+
 
 }
