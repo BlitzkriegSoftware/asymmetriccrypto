@@ -1,5 +1,5 @@
 # asymmetriccrypto
-A demo of asymmetric cryptography in C# Core. 3.1
+A demo of asymmetric cryptography in C# 9.0, NET 6.0
 
 This is a unit-test driven project.
 
