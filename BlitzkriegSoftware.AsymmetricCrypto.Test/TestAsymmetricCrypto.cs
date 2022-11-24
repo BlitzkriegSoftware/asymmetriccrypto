@@ -1,3 +1,4 @@
+using Faker;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
@@ -57,7 +58,7 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
         {
             string expected = string.Empty;
             for (int i = 1; i < 260; i++) {
-                expected = new string(Faker.Lorem.Letters(i).ToArray());
+                expected = new string(Lorem.Letters(i).ToArray());
                 _testContext.WriteLine($"[{expected.Length}]: {expected}");
 
                 try
