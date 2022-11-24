@@ -4,6 +4,8 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>9.0</LangVersion>
 		<IsPackable>false</IsPackable>
+		<Version>6.0.0</Version>
+		<InformationalVersion>6.0.0</InformationalVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
