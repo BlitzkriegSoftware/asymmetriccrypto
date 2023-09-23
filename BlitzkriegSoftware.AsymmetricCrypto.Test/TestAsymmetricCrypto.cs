@@ -1,14 +1,17 @@
 using Faker;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace BlitzkriegSoftware.AsymmetricCrypto.Test
 {
     [TestClass]
+    [ExcludeFromCodeCoverage]
     public class TestAsymmetricCrypto
     {
-        #region "Boilerplate"
+        #region "Boilerplate and read in private RSA key"
 
         private static TestContext _testContext;
         private static string PrivateKey;
@@ -57,7 +60,8 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
         public void SizingTest1()
         {
             string expected = string.Empty;
-            for (int i = 1; i < 260; i++) {
+            for (int i = 1; i < 260; i++)
+            {
                 expected = new string(Lorem.Letters(i).ToArray());
                 _testContext.WriteLine($"[{expected.Length}]: {expected}");
 
@@ -69,7 +73,8 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
                         var pt = cg.Decrypt(ct);
                         Assert.AreEqual(expected, pt);
                     }
-                } catch(ArgumentOutOfRangeException ex)
+                }
+                catch (ArgumentOutOfRangeException ex)
                 {
                     _testContext.WriteLine($"{ex.Message}");
                     break;
@@ -78,5 +83,73 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
             _testContext.WriteLine($"Maximim Length {expected.Length - 1}");
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void BadCtor1()
+        {
+            _ = new AsymmetricCryptoHelper(null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void BadEncrypt1()
+        {
+            using (var cg = new AsymmetricCryptoHelper(PrivateKey))
+            {
+                _ = cg.Encrypt(null);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.ArgumentOutOfRangeException))]
+        public void BadEncrypt2()
+        {
+            using (var cg = new AsymmetricCryptoHelper("this is not a RSA Private Key"))
+            {
+
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.Security.Cryptography.CryptographicException))]
+        public void BadEncrypt3()
+        {
+            using (var cg = new AsymmetricCryptoHelper($"this is{Environment.NewLine} not a{Environment.NewLine} RSA Private Key"))
+            {
+
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void BadDecrypt1()
+        {
+            using (var cg = new AsymmetricCryptoHelper(PrivateKey))
+            {
+                _ = cg.Decrypt(null);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.FormatException))]
+        public void BadDecrypt2()
+        {
+            var cipherText = "This is not ciphered text";
+            using (var cg = new AsymmetricCryptoHelper(PrivateKey))
+            {
+                _ = cg.Decrypt(cipherText);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.Security.Cryptography.CryptographicException))]
+        public void BadDecrypt3()
+        {
+            using (var cg = new AsymmetricCryptoHelper(PrivateKey))
+            {
+                var cipherText = Convert.ToBase64String(cg.ByteConverter.GetBytes("This is not ciphered text"));
+                _ = cg.Decrypt(cipherText);
+            }
+        }
     }
 }

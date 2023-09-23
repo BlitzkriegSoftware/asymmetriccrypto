@@ -4,10 +4,27 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>9.0</LangVersion>
 		<IsPackable>false</IsPackable>
+		<AnalysisLevel>6.0-recommended</AnalysisLevel>
+		<Nullable>disable</Nullable>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<NeutralLanguage>en</NeutralLanguage>
+		<WarningLevel>5</WarningLevel>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<Version>6.0.0</Version>
 		<InformationalVersion>6.0.0</InformationalVersion>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<Authors>Stuart Williams</Authors>
+		<Company>Blitzkrieg Software</Company>
+		<Copyright>(c) 2019-2023 Blitzkrieg Software / Stuart Williams</Copyright>
+		<Title>Tests of RSA Crypto</Title>
+		<Product>BlitzkriegSoftware.AsymmetricCrypto</Product>
+		<Description>Tests</Description>
+	</PropertyGroup>
+	
 	<ItemGroup>
 		<None Remove="rsa4096.private" />
 		<None Remove="rsa4096.public" />
@@ -27,14 +44,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Faker.Data" Version="2.0.0" />
+		<PackageReference Include="Faker.Data" Version="2.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
-		<PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.2.10" />
-		<PackageReference Include="coverlet.collector" Version="3.2.0">
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+		<PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
+		<PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
+		<PackageReference Include="coverlet.collector" Version="6.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
