@@ -1,0 +1,70 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<LangVersion>9.0</LangVersion>
+		<AnalysisLevel>6.0-recommended</AnalysisLevel>
+		<Nullable>disable</Nullable>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<NeutralLanguage>en</NeutralLanguage>
+		<WarningLevel>5</WarningLevel>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Version>6.0.2</Version>
+		<InformationalVersion>6.0.2</InformationalVersion>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Authors>Stuart Williams</Authors>
+		<Company>Blitzkrieg Software</Company>
+		<Copyright>(c) 2019-2023 Blitzkrieg Software / Stuart Williams</Copyright>
+		<Title>BlitzkriegSoftware.AsymmetricCrypto NuGet</Title>
+		<Product>BlitzkriegSoftware.AsymmetricCrypto</Product>
+		<Description>A little helper for RSA Asymmetric Crypto</Description>
+		<ApplicationIcon>favicon_32x32.ico</ApplicationIcon>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<IsPackable>true</IsPackable>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<DocumentationFile>.\BlitzkriegSoftware.AsymmetricCrypto.xml</DocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageProjectUrl>https://github.com/BlitzkriegSoftware/asymmetriccrypto</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/BlitzkriegSoftware/asymmetriccrypto</RepositoryUrl>
+		<PackageIcon>blizkrieglogo300_50.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>rsa;asymmetric;crypto</PackageTags>
+		<PackageReleaseNotes>6.0.2 - 1st NuGet</PackageReleaseNotes>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<IncludeSymbols>True</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Content Include="favicon_32x32.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\..\SecureRandomReplacement\LICENSE">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	  <None Include="..\..\SecureRandomReplacement\README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="blizkrieglogo300_50.png">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
+
+</Project>

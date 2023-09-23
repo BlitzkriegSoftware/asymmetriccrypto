@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BlitzkriegSoftware.AsymmetricCryptoHelper</name>
+    </assembly>
+    <members>
+        <member name="T:BlitzkriegSoftware.AsymmetricCrypto.AsymmetricCryptoHelper">
+            <summary>
+            Helper: To Encrypt and Decrypt Text using a public/private key
+            </summary>
+        </member>
+        <member name="F:BlitzkriegSoftware.AsymmetricCrypto.AsymmetricCryptoHelper.MaxCharsSupported">
+            <summary>
+            Maximum Support Characters
+            </summary>
+        </member>
+        <member name="P:BlitzkriegSoftware.AsymmetricCrypto.AsymmetricCryptoHelper.ByteConverter">
+            <summary>
+            Unicode Byte Converter
+            </summary>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCrypto.AsymmetricCryptoHelper.#ctor(System.String)">
+            <summary>
+            CTOR
+            </summary>
+            <param name="keyPrivate">RSA Private Key</param>
+            <exception cref="T:System.ArgumentNullException">Missing Key</exception>
+            <exception cref="T:System.Security.Cryptography.CryptographicException">Bad Key</exception>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCrypto.AsymmetricCryptoHelper.Encrypt(System.String)">
+            <summary>
+            Encrypt Text
+            </summary>
+            <param name="text">Text</param>
+            <returns>Enciphered Text</returns>
+            <exception cref="T:System.ArgumentNullException">(sic)</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">(sic)</exception>
+            <exception cref="T:System.Security.Cryptography.CryptographicException">Bad Key</exception>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCrypto.AsymmetricCryptoHelper.Decrypt(System.String)">
+            <summary>
+            Decrypt
+            </summary>
+            <param name="cryptoText">Text to be decrypted</param>
+            <returns>Plain text</returns>
+            <exception cref="T:System.ArgumentNullException">(sic)</exception>
+            <exception cref="T:System.Security.Cryptography.CryptographicException">Bad Key or <c>cryptoText</c></exception>
+            <exception cref="T:System.FormatException">Bad <c>cryptoText</c></exception>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCrypto.AsymmetricCryptoHelper.Dispose">
+            <summary>
+            (sic)
+            </summary>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCrypto.AsymmetricCryptoHelper.Dispose(System.Boolean)">
+            <summary>
+            (sic)
+            </summary>
+            <param name="disposing">flag</param>
+        </member>
+    </members>
+</doc>

@@ -1,15 +1,15 @@
+using BlitzkriegSoftware.AsymmetricCrypto;
 using Faker;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Security.Cryptography;
 
-namespace BlitzkriegSoftware.AsymmetricCrypto.Test
+namespace BlitzkriegSoftware.Test.AsymmetricCrypto
 {
     [TestClass]
     [ExcludeFromCodeCoverage]
-    public class TestAsymmetricCrypto
+    public class AsymmetricCryptoTest
     {
         #region "Boilerplate and read in private RSA key"
 
@@ -84,6 +84,7 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
         }
 
         [TestMethod]
+        [TestCategory("Unit")]
         [ExpectedException(typeof(ArgumentNullException))]
         public void BadCtor1()
         {
@@ -91,6 +92,7 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
         }
 
         [TestMethod]
+        [TestCategory("Unit")]
         [ExpectedException(typeof(ArgumentNullException))]
         public void BadEncrypt1()
         {
@@ -101,6 +103,7 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
         }
 
         [TestMethod]
+        [TestCategory("Unit")]
         [ExpectedException(typeof(System.ArgumentOutOfRangeException))]
         public void BadEncrypt2()
         {
@@ -111,6 +114,7 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
         }
 
         [TestMethod]
+        [TestCategory("Unit")]
         [ExpectedException(typeof(System.Security.Cryptography.CryptographicException))]
         public void BadEncrypt3()
         {
@@ -121,6 +125,7 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
         }
 
         [TestMethod]
+        [TestCategory("Unit")]
         [ExpectedException(typeof(ArgumentNullException))]
         public void BadDecrypt1()
         {
@@ -131,6 +136,7 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
         }
 
         [TestMethod]
+        [TestCategory("Unit")]
         [ExpectedException(typeof(System.FormatException))]
         public void BadDecrypt2()
         {
@@ -142,6 +148,7 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
         }
 
         [TestMethod]
+        [TestCategory("Unit")]
         [ExpectedException(typeof(System.Security.Cryptography.CryptographicException))]
         public void BadDecrypt3()
         {
@@ -151,5 +158,6 @@ namespace BlitzkriegSoftware.AsymmetricCrypto.Test
                 _ = cg.Decrypt(cipherText);
             }
         }
+
     }
 }
