@@ -1,0 +1,9 @@
+%pubring .\key.txt
+Key-Type: ECDSA
+Key-Curve: NIST P-256
+Name-Real: test
+Name-Comment: Test Comment
+Name-Email: test@nomail.org
+Expire-Date: 0
+Passphrase: p@ss#w0rd-
+%commit
