@@ -1,6 +1,9 @@
 <#
 	Make a RSA Private/Public Key Pair
-	See: https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key
+	
+	See: 
+	* https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key
+    * https://www.gnupg.org/documentation/manuals/gnupg/Unattended-GPG-key-generation.html
 
 	Supported algorithms:
 		Pubkey: 
@@ -14,30 +17,58 @@
 			Uncompressed, ZIP, ZLIB, BZIP2
 #>
 
-[int]$klen = 1024;
+<#
+	Functions
+#>
+
+function Remove-IfExists {
+	Param (
+		[string]$name,
+		[bool]$isFolder = $false
+	)
+
+	if($isFolder) {
+		if(Test-Path -Path $name -PathType Container) {
+			Remove-Item -Path $name -Force -Recurse
+		}
+	} else {
+		if(Test-Path -Path $name -PathType Leaf) {
+			Remove-Item -Path $name -Force
+		}
+	}
+}
+
+<#
+	Main
+#>
+
 [string]$name="test";
+[string]$emai="${name}@nomail.org";
+[string]$note="Test Comment";
+
 [string]$algo="ECDSA";
 [string]$curv="NIST P-256";
-[string]$cans="YES";
-[string]$ktyp="MASTER";
-[string]$emai="${name}@nomail.org";
-[string]$uuid="name=${name},email=${emai}";
-[string]$note="Test Comment";
 [string]$pass="p@ss#w0rd-";
 
-# Generate File
-[string]$config=".\config.txt";
-if (Test-Path $config -PathType Leaf) {
-	Remove-Item $config
-}
-# Keyfile File
-[string]$keyf=".\key.bin";
-if (Test-Path $keyf -PathType Leaf) {
-	Remove-Item $keyf
-}
+$env:GNUPGHOME=$null;
+[string]$tempFolder = "c:\temp\gpgtemp";
+Remove-IfExists -name $tempFolder -isFolder $true;
+$null = New-Item -ItemType Directory -Force -Path $tempFolder;
+$env:GNUPGHOME=$tempFolder;
+
+[string]$passFile= "${tempFolder}\pass.txt";
+Remove-IfExists -name $passFile
+$pass | Out-File -FilePath $passFile -Encoding utf8 -NoNewline
+
+[string]$config  = "${tempFolder}\config.txt";
+Remove-IfExists -name $config
+
+[string]$pubFile = "${PSScriptRoot}\public.pgp.txt";
+Remove-IfExists -name $pubFile
+[string]$priFile = "${PSScriptRoot}\private.pgp.txt";
+Remove-IfExists -name $priFile
 
 # Generate configuration for key
-"%pubring ${keyf}" | Out-File -Encoding utf8 -Path $config -append
 "Key-Type: ${algo}" | Out-File -Encoding utf8 -Path $config -append
 "Key-Curve: ${curv}" | Out-File -Encoding utf8 -Path $config -append
 "Name-Real: ${name}" | Out-File -Encoding utf8 -Path $config -append
@@ -47,7 +78,23 @@ if (Test-Path $keyf -PathType Leaf) {
 "Passphrase: ${pass}" | Out-File -Encoding utf8 -Path $config -append
 "%commit" | Out-File -Encoding utf8 -Path $config -append
 
-gpg --batch --generate-key $config
+gpg `
+	--batch `
+	--generate-key $config
 
-gpg --output public.pgp --armor --export $emai < $keyf
-gpg --output private.pgp --armor --export-secret-key $emai < $keyf
+gpg `
+	--output $pubFile `
+	--armor `
+	--export $emai
+
+gpg `
+	--batch `
+	--yes `
+	--armor `
+	--passphrase-file $passFile `
+	--output $priFile `
+	--export-secret-key $emai
+
+Remove-IfExists -name $tempFolder -isFolder $true
+$env:GNUPGHOME=$null;
+exit 0;
