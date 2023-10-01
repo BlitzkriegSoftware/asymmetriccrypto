@@ -88,10 +88,11 @@ gpg `
 	--export $emai
 
 gpg `
+	--pinentry-mode loopback `
+	--passphrase-file $passFile `
 	--batch `
 	--yes `
 	--armor `
-	--passphrase-file $passFile `
 	--output $priFile `
 	--export-secret-key $emai
 
