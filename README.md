@@ -3,12 +3,22 @@ A demo of asymmetric cryptography in C# 9.0, NET 6.0
 
 This is a unit-test driven project.
 
+## References
+
+* https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key
+
+* https://www.gnupg.org/documentation/manuals/gnupg/Unattended-GPG-key-generation.html
+
+* https://www.gnupg.org/documentation/manuals/gnupg/Ephemeral-home-directories.html
+
+* https://github.com/mattosaurus/PgpCore
+
 ## How to use
 
-The `git bash` command `MakeKeys.sh` generates two matched files:
+The `PowerShell` command `Make-RsaFiles.ps1` generates two matched files:
 
-* `rsa4096.private` - Which we actually use
-* `rsa4096.public` - Which matches the private key and is for completeness
+* `private.pgp.txt` - Which we actually use
+* `public.pgp.txt` - Which matches the private key and could be given to anyone to help encypher files
 
 ## The unit tests
 

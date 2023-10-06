@@ -4,30 +4,39 @@
         <name>BlitzkriegSoftware.AsymmetricCryptoHelper</name>
     </assembly>
     <members>
-        <member name="T:BlitzkriegSoftware.AsymmetricCrypto.AsymmetricCryptoHelper">
+        <member name="T:BlitzkriegSoftware.AsymmetricCryptoHelper.AsymmetricCryptoClientBouncyCastle">
             <summary>
-            Helper: To Encrypt and Decrypt Text using a public/private key
+            For Public/Private GPG generated keys
+            <para>A PassPhrase is Required!</para>
             </summary>
         </member>
-        <member name="F:BlitzkriegSoftware.AsymmetricCrypto.AsymmetricCryptoHelper.MaxCharsSupported">
+        <member name="F:BlitzkriegSoftware.AsymmetricCryptoHelper.AsymmetricCryptoClientBouncyCastle.MaxCharsSupported">
             <summary>
             Maximum Support Characters
             </summary>
         </member>
-        <member name="P:BlitzkriegSoftware.AsymmetricCrypto.AsymmetricCryptoHelper.ByteConverter">
+        <member name="P:BlitzkriegSoftware.AsymmetricCryptoHelper.AsymmetricCryptoClientBouncyCastle.ByteConverter">
             <summary>
             Unicode Byte Converter
             </summary>
         </member>
-        <member name="M:BlitzkriegSoftware.AsymmetricCrypto.AsymmetricCryptoHelper.#ctor(System.String)">
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.AsymmetricCryptoClientBouncyCastle.ConvertKeyTextToSecret(System.String)">
+            <summary>
+            Convert a ASCII Armored GPG Key to a Secret to use in Code
+            </summary>
+            <param name="key">(sic)</param>
+            <returns>(secret)</returns>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.AsymmetricCryptoClientBouncyCastle.#ctor(System.String,System.String)">
             <summary>
             CTOR
             </summary>
             <param name="keyPrivate">RSA Private Key</param>
+            <param name="passPhrase">PassPhrase</param>
             <exception cref="T:System.ArgumentNullException">Missing Key</exception>
             <exception cref="T:System.Security.Cryptography.CryptographicException">Bad Key</exception>
         </member>
-        <member name="M:BlitzkriegSoftware.AsymmetricCrypto.AsymmetricCryptoHelper.Encrypt(System.String)">
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.AsymmetricCryptoClientBouncyCastle.Encrypt(System.String)">
             <summary>
             Encrypt Text
             </summary>
@@ -37,7 +46,7 @@
             <exception cref="T:System.ArgumentOutOfRangeException">(sic)</exception>
             <exception cref="T:System.Security.Cryptography.CryptographicException">Bad Key</exception>
         </member>
-        <member name="M:BlitzkriegSoftware.AsymmetricCrypto.AsymmetricCryptoHelper.Decrypt(System.String)">
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.AsymmetricCryptoClientBouncyCastle.Decrypt(System.String)">
             <summary>
             Decrypt
             </summary>
@@ -47,12 +56,209 @@
             <exception cref="T:System.Security.Cryptography.CryptographicException">Bad Key or <c>cryptoText</c></exception>
             <exception cref="T:System.FormatException">Bad <c>cryptoText</c></exception>
         </member>
-        <member name="M:BlitzkriegSoftware.AsymmetricCrypto.AsymmetricCryptoHelper.Dispose">
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.AsymmetricCryptoClientBouncyCastle.Dispose">
             <summary>
             (sic)
             </summary>
         </member>
-        <member name="M:BlitzkriegSoftware.AsymmetricCrypto.AsymmetricCryptoHelper.Dispose(System.Boolean)">
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.AsymmetricCryptoClientBouncyCastle.Dispose(System.Boolean)">
+            <summary>
+            (sic)
+            </summary>
+            <param name="disposing">flag</param>
+        </member>
+        <member name="T:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement">
+            <summary>
+            A collection of methods used to encode and decode base64.
+            <para>From <![CDATA[https://github.com/reecerussell/base64-extensions/blob/master/Base64Extensions/Base64Convert.cs]]></para>
+            </summary>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement.Encode(System.String)">
+            <summary>
+            Converts <paramref name="value"/> to a base64 string, using UTF8 encoding.
+            </summary>
+            <param name="value">The <see cref="T:System.String"/> to encode.</param>
+            <returns>A base64 representation of <paramref name="value"/>.</returns>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement.Encode(System.String,System.Int32@)">
+            <summary>
+            Converts <paramref name="value"/> to a base64 string, using UTF8 encoding.
+            </summary>
+            <param name="value">The <see cref="T:System.String"/> to encode.</param>
+            <param name="bytesWritten">The number of Base64 bytes written to the output.</param>
+            <returns>A base64 representation of <paramref name="value"/>.</returns>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement.Encode(System.String,System.Boolean)">
+            <summary>
+            Converts <paramref name="value"/> to a base64 string, using UTF8 encoding.
+            </summary>
+            <param name="value">The <see cref="T:System.String"/> to encode.</param>
+            <param name="urlSafe">Determines whether the result will contain URL-safe characters.</param>
+            <returns>A base64 representation of <paramref name="value"/>.</returns>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement.Encode(System.String,System.Boolean,System.Int32@)">
+            <summary>
+            Converts <paramref name="value"/> to a base64 string, using UTF8 encoding.
+            </summary>
+            <param name="value">The <see cref="T:System.String"/> to encode.</param>
+            <param name="urlSafe">Determines whether the result will contain URL-safe characters.</param>
+            <param name="bytesWritten">The number of Base64 bytes written to the output.</param>
+            <returns>A base64 representation of <paramref name="value"/>.</returns>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement.Encode(System.Byte[])">
+            <summary>
+            Converts <paramref name="value"/> to base64, using UTF8 encoding.
+            </summary>
+            <param name="value">The value to encode.</param>
+            <returns>A base64 representation of <paramref name="value"/>.</returns>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement.Encode(System.Byte[],System.Int32@)">
+            <summary>
+            Converts <paramref name="value"/> to base64, using UTF8 encoding.
+            </summary>
+            <param name="value">The value to encode.</param>
+            <param name="bytesWritten">The number of Base64 bytes written to the output.</param>
+            <returns>A base64 representation of <paramref name="value"/>.</returns>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement.Encode(System.Byte[],System.Boolean)">
+            <summary>
+            Converts <paramref name="value"/> to base64, using UTF8 encoding.
+            </summary>
+            <param name="value">The value to encode.</param>
+            <param name="urlSafe">Determines whether the result will contain URL-safe characters.</param>
+            <returns>A base64 representation of <paramref name="value"/>.</returns>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement.Encode(System.Byte[],System.Boolean,System.Int32@)">
+            <summary>
+            Converts <paramref name="value"/> to base64, using UTF8 encoding.
+            </summary>
+            <param name="value">The value to encode.</param>
+            <param name="urlSafe">Determines whether the result will contain URL-safe characters.</param>
+            <param name="bytesWritten">The number of Base64 bytes written to the output.</param>
+            <returns>A base64 representation of <paramref name="value"/>.</returns>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement.Encode(System.ReadOnlySpan{System.Byte},System.Boolean,System.Int32@)">
+            <summary>
+            Converts <paramref name="value"/> to base64, using UTF8 encoding.
+            </summary>
+            <param name="value">The value to encode.</param>
+            <param name="urlSafe">Determines whether the result will contain URL-safe characters.</param>
+            <param name="bytesWritten">The number of Base64 bytes written to the output.</param>
+            <returns>A base64 representation of <paramref name="value"/>.</returns>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement.Decode(System.String)">
+            <summary>
+            Converts a base64 string to plain text, using UTF8 encoding.
+            </summary>
+            <param name="value">The base64 value to decode.</param>
+            <returns>A plain text representation of <paramref name="value"/>.</returns>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement.DecodeToArray(System.String)">
+            <summary>
+            Decode base64 string to an array
+            </summary>
+            <param name="value">(sic)</param>
+            <returns>(sic)</returns>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement.Decode(System.Byte[])">
+            <summary>
+            Converts base64 to plain text, using UTF8 encoding.
+            </summary>
+            <param name="value">The base64 data to decode.</param>
+            <returns>A plain text representation of <paramref name="value"/>.</returns>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement.Decode(System.ReadOnlySpan{System.Byte})">
+            <summary>
+            Converts base64 to plain text, using UTF8 encoding.
+            </summary>
+            <param name="value">The base64 data to decode.</param>
+            <returns>A plain text representation of <paramref name="value"/>.</returns>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement.Replace(System.Span{System.Byte},System.Collections.Generic.IDictionary{System.Char,System.Char})">
+            <summary>
+            Replaces characters in <paramref name="src"/>, inline using <paramref name="replacements"/>.
+            </summary>
+            <param name="src">The <see cref="T:System.Span`1"/> to do replacements on.</param>
+            <param name="replacements">A dictionary of replacement characters.</param>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement.PadEnd(System.Span{System.Byte},System.Int32)">
+            <summary>
+            Sets the <paramref name="paddingLength"/> number of bytes from the end of
+            <paramref name="src"/> to <see cref="F:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement.Padding"/>.
+            </summary>
+            <param name="src">The <see cref="T:System.Span`1"/> to append to.</param>
+            <param name="paddingLength">The amount of padding to add.</param>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement.TrimEndPadding(System.Span{System.Byte}@,System.Int32@)">
+            <summary>
+            Trims all consecutive <see cref="F:BlitzkriegSoftware.AsymmetricCryptoHelper.Base64Replacement.Padding"/> characters from the end of <paramref name="src"/>.
+            </summary>
+            <param name="src">A reference to the <see cref="T:System.Span`1"/> to trim.</param>
+            <param name="bytesRemoved">The number of bytes of padding removed.</param>
+        </member>
+        <member name="T:BlitzkriegSoftware.AsymmetricCryptoNative.AsymmetricCryptoClientNative">
+            <summary>
+            Helper: To Encrypt and Decrypt Text using a public/private key
+            <para>Only works with C# generated key pairs</para>
+            </summary>
+        </member>
+        <member name="F:BlitzkriegSoftware.AsymmetricCryptoNative.AsymmetricCryptoClientNative.MaxCharsSupported">
+            <summary>
+            Maximum Support Characters
+            </summary>
+        </member>
+        <member name="P:BlitzkriegSoftware.AsymmetricCryptoNative.AsymmetricCryptoClientNative.ByteConverter">
+            <summary>
+            Unicode Byte Converter
+            </summary>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoNative.AsymmetricCryptoClientNative.ConvertKeyTextToSecret(System.String)">
+            <summary>
+            Convert a ASCII Armored GPG Key to a Secret to use in Code
+            </summary>
+            <param name="key">(sic)</param>
+            <returns>(secret)</returns>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoNative.AsymmetricCryptoClientNative.#ctor(System.String)">
+            <summary>
+            CTOR
+            </summary>
+            <param name="keyPrivate">RSA Private Key</param>
+            <exception cref="T:System.ArgumentNullException">Missing Key</exception>
+            <exception cref="T:System.Security.Cryptography.CryptographicException">Bad Key</exception>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoNative.AsymmetricCryptoClientNative.#ctor(System.Byte[])">
+            <summary>
+            CTOR
+            </summary>
+            <param name="secret">As byte array</param>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoNative.AsymmetricCryptoClientNative.Encrypt(System.String)">
+            <summary>
+            Encrypt Text
+            </summary>
+            <param name="text">Text</param>
+            <returns>Enciphered Text</returns>
+            <exception cref="T:System.ArgumentNullException">(sic)</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">(sic)</exception>
+            <exception cref="T:System.Security.Cryptography.CryptographicException">Bad Key</exception>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoNative.AsymmetricCryptoClientNative.Decrypt(System.String)">
+            <summary>
+            Decrypt
+            </summary>
+            <param name="cryptoText">Text to be decrypted</param>
+            <returns>Plain text</returns>
+            <exception cref="T:System.ArgumentNullException">(sic)</exception>
+            <exception cref="T:System.Security.Cryptography.CryptographicException">Bad Key or <c>cryptoText</c></exception>
+            <exception cref="T:System.FormatException">Bad <c>cryptoText</c></exception>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoNative.AsymmetricCryptoClientNative.Dispose">
+            <summary>
+            (sic)
+            </summary>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoNative.AsymmetricCryptoClientNative.Dispose(System.Boolean)">
             <summary>
             (sic)
             </summary>

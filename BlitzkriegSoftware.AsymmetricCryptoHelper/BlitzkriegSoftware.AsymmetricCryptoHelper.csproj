@@ -61,6 +61,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="PgpCore" Version="5.10.0" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Update="blizkrieglogo300_50.png">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>

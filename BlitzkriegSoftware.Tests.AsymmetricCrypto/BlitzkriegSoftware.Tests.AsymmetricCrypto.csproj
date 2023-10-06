@@ -35,13 +35,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Content Include="..\private.pgp.txt" Link="private.pgp.txt">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Include="favicon_32x32.ico" />
-		<Content Include="rsa4096.private">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="rsa4096.public">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -72,6 +69,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="PgpCore" Version="5.10.0" />
 	</ItemGroup>
 
 	<ItemGroup>

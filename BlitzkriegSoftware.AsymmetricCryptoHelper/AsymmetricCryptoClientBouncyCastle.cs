@@ -1,16 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Org.BouncyCastle;
+using Org.BouncyCastle.Bcpg.OpenPgp;
+using Org.BouncyCastle.Utilities.IO;
+using PgpCore;
+using static System.Net.Mime.MediaTypeNames;
 
-namespace BlitzkriegSoftware.AsymmetricCrypto
+namespace BlitzkriegSoftware.AsymmetricCryptoHelper
 {
-
     /// <summary>
-    /// Helper: To Encrypt and Decrypt Text using a public/private key
+    /// For Public/Private GPG generated keys
+    /// <para>A PassPhrase is Required!</para>
     /// </summary>
-    public class AsymmetricCryptoHelper : IDisposable
+    public class AsymmetricCryptoClientBouncyCastle : IDisposable
     {
         #region "Vars, Constants, Utility"
 
@@ -23,20 +30,17 @@ namespace BlitzkriegSoftware.AsymmetricCrypto
         private bool disposed = false;
 #pragma warning restore CA1805 // To conform to dispose pattern
 
-        private RSA rsa;
-
-        private readonly string _keyPrivate = string.Empty;
-        private readonly UnicodeEncoding _byteConverter = new();
-
         /// <summary>
         /// Unicode Byte Converter
         /// </summary>
-        public UnicodeEncoding ByteConverter
-        {
-            get { return _byteConverter; }
-        }
+        public UnicodeEncoding ByteConverter { get; } = new();
 
-        private static string KeyConverter(string key)
+        /// <summary>
+        /// Convert a ASCII Armored GPG Key to a Secret to use in Code
+        /// </summary>
+        /// <param name="key">(sic)</param>
+        /// <returns>(secret)</returns>
+        public static byte[] ConvertKeyTextToSecret(string key)
         {
             var lines = key.Split(
                 new[] { Environment.NewLine },
@@ -46,33 +50,46 @@ namespace BlitzkriegSoftware.AsymmetricCrypto
             lines.RemoveAt(lines.Count - 1);
             lines.RemoveAt(0);
 
-            var cvt = lines.Aggregate((a, b) => a + b);
-            return cvt;
+            StringBuilder sb = new();
+            foreach (var line in lines)
+            {
+                sb.Append(line.Trim());
+            }
+            var text = sb.ToString();
+
+            var secret = Base64Replacement.DecodeToArray(text);
+            return secret;
         }
+
+        private readonly PGP pgp;
 
         #endregion
 
-        #region "CTOR"
         [ExcludeFromCodeCoverage]
-        private AsymmetricCryptoHelper() { }
+        private AsymmetricCryptoClientBouncyCastle() { }
 
         /// <summary>
         /// CTOR
         /// </summary>
         /// <param name="keyPrivate">RSA Private Key</param>
+        /// <param name="passPhrase">PassPhrase</param>
         /// <exception cref="ArgumentNullException">Missing Key</exception>
         /// <exception cref="CryptographicException">Bad Key</exception>
-        public AsymmetricCryptoHelper(string keyPrivate)
+        public AsymmetricCryptoClientBouncyCastle(string keyPrivate, string passPhrase)
         {
-            if (string.IsNullOrWhiteSpace(keyPrivate)) throw new ArgumentNullException(nameof(keyPrivate));
+            if(string.IsNullOrWhiteSpace(keyPrivate))
+            {
+                throw new ArgumentNullException(nameof(keyPrivate));
+            }
 
-            rsa = RSA.Create();
+            if(string.IsNullOrWhiteSpace(passPhrase))
+            {
+                throw new ArgumentNullException(nameof(passPhrase));
+            }
 
-            _keyPrivate = KeyConverter(keyPrivate);
-            rsa.ImportRSAPrivateKey(Convert.FromBase64String(_keyPrivate), out _);
+            EncryptionKeys encryptionKeys = new EncryptionKeys(keyPrivate, passPhrase);
+            pgp = new(encryptionKeys);
         }
-
-        #endregion
 
         /// <summary>
         /// Encrypt Text
@@ -85,18 +102,15 @@ namespace BlitzkriegSoftware.AsymmetricCrypto
         public string Encrypt(string text)
         {
             if (string.IsNullOrWhiteSpace(text)) throw new ArgumentNullException(nameof(text));
-            if (text.Length > MaxCharsSupported) throw new ArgumentOutOfRangeException(nameof(text), $"Text length of {text.Length} exceeds maximum of {MaxCharsSupported}");
 
-            byte[] dataToEncrypt = _byteConverter.GetBytes(text);
-            byte[] encryptedData = rsa.Encrypt(
-                    data: dataToEncrypt,
-                    padding: RSAEncryptionPadding.Pkcs1
-            );
-
-            var cryptoText = Convert.ToBase64String(encryptedData);
-            return cryptoText;
+            var bytesIn = new MemoryStream(ByteConverter.GetBytes(text));
+            using (Stream bytesOut = new MemoryStream())
+            {
+                pgp.EncryptStream(bytesIn, bytesOut);
+                var outText = bytesOut.GetString();
+                return outText;
+            }
         }
-
         /// <summary>
         /// Decrypt
         /// </summary>
@@ -108,15 +122,13 @@ namespace BlitzkriegSoftware.AsymmetricCrypto
         public string Decrypt(string cryptoText)
         {
             if (string.IsNullOrWhiteSpace(cryptoText)) throw new ArgumentNullException(nameof(cryptoText));
-
-            byte[] encryptedData = Convert.FromBase64String(cryptoText);
-            byte[] data = rsa.Decrypt(
-                data: encryptedData,
-                padding: RSAEncryptionPadding.Pkcs1
-            );
-
-            var text = _byteConverter.GetString(data);
-            return text;
+            var bytesIn = new MemoryStream(ByteConverter.GetBytes(cryptoText));
+            using (Stream bytesOut = new MemoryStream())
+            {
+                pgp.EncryptStream(bytesIn, bytesOut);
+                var outText = bytesOut.GetString();
+                return outText;
+            }
         }
 
         #region "IDisposable"
@@ -126,7 +138,6 @@ namespace BlitzkriegSoftware.AsymmetricCrypto
         /// </summary>
         public void Dispose()
         {
-            rsa = null;
             Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -142,8 +153,7 @@ namespace BlitzkriegSoftware.AsymmetricCrypto
 
             if (disposing)
             {
-                rsa?.Clear();
-                rsa = null;
+                pgp?.Dispose();
             }
 
             disposed = true;
