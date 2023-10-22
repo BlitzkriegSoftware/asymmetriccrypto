@@ -21,11 +21,6 @@ namespace BlitzkriegSoftware.AsymmetricCryptoHelper
     {
         #region "Vars, Constants, Utility"
 
-        /// <summary>
-        /// Maximum Support Characters
-        /// </summary>
-        public const int MaxCharsSupported = 250;
-
 #pragma warning disable CA1805 // Do not initialize unnecessarily
         private bool disposed = false;
 #pragma warning restore CA1805 // To conform to dispose pattern
@@ -34,35 +29,9 @@ namespace BlitzkriegSoftware.AsymmetricCryptoHelper
         /// Unicode Byte Converter
         /// </summary>
         public UnicodeEncoding ByteConverter { get; } = new();
-
-        /// <summary>
-        /// Convert a ASCII Armored GPG Key to a Secret to use in Code
-        /// </summary>
-        /// <param name="key">(sic)</param>
-        /// <returns>(secret)</returns>
-        public static byte[] ConvertKeyTextToSecret(string key)
-        {
-            var lines = key.Split(
-                new[] { Environment.NewLine },
-                StringSplitOptions.RemoveEmptyEntries
-            ).ToList();
-
-            lines.RemoveAt(lines.Count - 1);
-            lines.RemoveAt(0);
-
-            StringBuilder sb = new();
-            foreach (var line in lines)
-            {
-                sb.Append(line.Trim());
-            }
-            var text = sb.ToString();
-
-            var secret = Base64Replacement.DecodeToArray(text);
-            return secret;
-        }
-
         private readonly PGP pgp;
-
+        private EncryptionKeys _encryptionKeys;
+        private string _passphrase;
         #endregion
 
         [ExcludeFromCodeCoverage]
@@ -72,23 +41,21 @@ namespace BlitzkriegSoftware.AsymmetricCryptoHelper
         /// CTOR
         /// </summary>
         /// <param name="keyPrivate">RSA Private Key</param>
+        /// <param name="keyPublic">RSA Public Key</param>
         /// <param name="passPhrase">PassPhrase</param>
         /// <exception cref="ArgumentNullException">Missing Key</exception>
         /// <exception cref="CryptographicException">Bad Key</exception>
-        public AsymmetricCryptoClientBouncyCastle(string keyPrivate, string passPhrase)
-        {
-            if(string.IsNullOrWhiteSpace(keyPrivate))
-            {
-                throw new ArgumentNullException(nameof(keyPrivate));
-            }
-
-            if(string.IsNullOrWhiteSpace(passPhrase))
-            {
-                throw new ArgumentNullException(nameof(passPhrase));
-            }
-
-            EncryptionKeys encryptionKeys = new EncryptionKeys(keyPrivate, passPhrase);
-            pgp = new(encryptionKeys);
+        public AsymmetricCryptoClientBouncyCastle(
+            string keyPublic,
+            string keyPrivate, 
+            string passPhrase
+        ) {
+            keyPrivate.ThrowIfNullOrEmpty(nameof( keyPrivate ) );
+            keyPublic.ThrowIfNullOrEmpty (nameof( keyPublic ) );
+            passPhrase.ThrowIfNullOrEmpty(nameof(passPhrase ) );
+            _encryptionKeys = new(keyPublic, keyPrivate, passPhrase);
+            _passphrase = passPhrase;
+            pgp = new(_encryptionKeys);
         }
 
         /// <summary>
@@ -101,12 +68,13 @@ namespace BlitzkriegSoftware.AsymmetricCryptoHelper
         /// <exception cref="CryptographicException">Bad Key</exception>
         public string Encrypt(string text)
         {
-            if (string.IsNullOrWhiteSpace(text)) throw new ArgumentNullException(nameof(text));
+            text.ThrowIfNullOrEmpty(nameof(text));
 
             var bytesIn = new MemoryStream(ByteConverter.GetBytes(text));
             using (Stream bytesOut = new MemoryStream())
             {
                 pgp.EncryptStream(bytesIn, bytesOut);
+                bytesOut.Position = 0;
                 var outText = bytesOut.GetString();
                 return outText;
             }
@@ -121,14 +89,11 @@ namespace BlitzkriegSoftware.AsymmetricCryptoHelper
         /// <exception cref="System.FormatException">Bad <c>cryptoText</c></exception>
         public string Decrypt(string cryptoText)
         {
-            if (string.IsNullOrWhiteSpace(cryptoText)) throw new ArgumentNullException(nameof(cryptoText));
-            var bytesIn = new MemoryStream(ByteConverter.GetBytes(cryptoText));
-            using (Stream bytesOut = new MemoryStream())
-            {
-                pgp.EncryptStream(bytesIn, bytesOut);
-                var outText = bytesOut.GetString();
-                return outText;
-            }
+            cryptoText.ThrowIfNullOrEmpty(nameof(cryptoText));
+            string outText = pgp.DecryptArmoredStringAsync(cryptoText)
+                             .ConfigureAwait(false).GetAwaiter().GetResult();
+            outText = outText.Replace('\0'.ToString(), "");
+            return outText;
         }
 
         #region "IDisposable"

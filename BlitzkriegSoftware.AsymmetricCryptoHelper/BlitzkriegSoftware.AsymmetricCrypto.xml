@@ -10,28 +10,17 @@
             <para>A PassPhrase is Required!</para>
             </summary>
         </member>
-        <member name="F:BlitzkriegSoftware.AsymmetricCryptoHelper.AsymmetricCryptoClientBouncyCastle.MaxCharsSupported">
-            <summary>
-            Maximum Support Characters
-            </summary>
-        </member>
         <member name="P:BlitzkriegSoftware.AsymmetricCryptoHelper.AsymmetricCryptoClientBouncyCastle.ByteConverter">
             <summary>
             Unicode Byte Converter
             </summary>
         </member>
-        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.AsymmetricCryptoClientBouncyCastle.ConvertKeyTextToSecret(System.String)">
-            <summary>
-            Convert a ASCII Armored GPG Key to a Secret to use in Code
-            </summary>
-            <param name="key">(sic)</param>
-            <returns>(secret)</returns>
-        </member>
-        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.AsymmetricCryptoClientBouncyCastle.#ctor(System.String,System.String)">
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.AsymmetricCryptoClientBouncyCastle.#ctor(System.String,System.String,System.String)">
             <summary>
             CTOR
             </summary>
             <param name="keyPrivate">RSA Private Key</param>
+            <param name="keyPublic">RSA Public Key</param>
             <param name="passPhrase">PassPhrase</param>
             <exception cref="T:System.ArgumentNullException">Missing Key</exception>
             <exception cref="T:System.Security.Cryptography.CryptographicException">Bad Key</exception>
@@ -195,6 +184,19 @@
             </summary>
             <param name="src">A reference to the <see cref="T:System.Span`1"/> to trim.</param>
             <param name="bytesRemoved">The number of bytes of padding removed.</param>
+        </member>
+        <member name="T:BlitzkriegSoftware.AsymmetricCryptoHelper.StringExtensions">
+            <summary>
+            String Extentions
+            </summary>
+        </member>
+        <member name="M:BlitzkriegSoftware.AsymmetricCryptoHelper.StringExtensions.ThrowIfNullOrEmpty(System.String,System.String)">
+            <summary>
+            Throw if a string is null
+            </summary>
+            <param name="text">Text To Check</param>
+            <param name="fieldName">Name of Field</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="T:BlitzkriegSoftware.AsymmetricCryptoNative.AsymmetricCryptoClientNative">
             <summary>

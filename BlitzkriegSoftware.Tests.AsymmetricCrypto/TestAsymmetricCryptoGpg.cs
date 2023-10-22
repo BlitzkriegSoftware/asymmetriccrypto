@@ -15,6 +15,7 @@ namespace BlitzkriegSoftware.Test.AsymmetricCrypto
 
         private static TestContext _testContext;
         private static string PrivateKey;
+        private static string PublicKey;
 
         // DO NOT DO THIS IN PRODUCTION CODE
         private const string PassPhrase = "p@ss#w0rd-";
@@ -23,6 +24,7 @@ namespace BlitzkriegSoftware.Test.AsymmetricCrypto
         public static void SetupTests(TestContext testContext)
         {
             _testContext = testContext;
+            PublicKey = File.ReadAllText(@".\public.pgp.txt", encoding: System.Text.Encoding.UTF8);
             PrivateKey = File.ReadAllText(@".\private.pgp.txt", encoding: System.Text.Encoding.UTF8);
         }
 
@@ -35,7 +37,7 @@ namespace BlitzkriegSoftware.Test.AsymmetricCrypto
             string expected = "xyz";
             _testContext.WriteLine($"[{expected.Length}]: {expected}");
 
-            using (AsymmetricCryptoClientBouncyCastle cg = new(PrivateKey,PassPhrase))
+            using (AsymmetricCryptoClientBouncyCastle cg = new(PublicKey, PrivateKey,PassPhrase))
             {
                 var ct = cg.Encrypt(expected);
                 var pt = cg.Decrypt(ct);
@@ -50,7 +52,7 @@ namespace BlitzkriegSoftware.Test.AsymmetricCrypto
             string expected = "The whole house is spinning because of a tornado.";
             _testContext.WriteLine($"[{expected.Length}]: {expected}", PassPhrase);
 
-            using (AsymmetricCryptoClientBouncyCastle cg = new(PrivateKey,PassPhrase))
+            using (AsymmetricCryptoClientBouncyCastle cg = new(PublicKey, PrivateKey,PassPhrase))
             {
                 var ct = cg.Encrypt(expected);
                 var pt = cg.Decrypt(ct);
@@ -70,7 +72,7 @@ namespace BlitzkriegSoftware.Test.AsymmetricCrypto
 
                 try
                 {
-                    using (AsymmetricCryptoClientBouncyCastle cg = new(PrivateKey, PassPhrase))
+                    using (AsymmetricCryptoClientBouncyCastle cg = new(PublicKey, PrivateKey, PassPhrase))
                     {
                         var ct = cg.Encrypt(expected);
                         var pt = cg.Decrypt(ct);
@@ -91,7 +93,11 @@ namespace BlitzkriegSoftware.Test.AsymmetricCrypto
         [ExpectedException(typeof(ArgumentNullException))]
         public void BadCtor1()
         {
-            _ = new AsymmetricCryptoClientBouncyCastle(keyPrivate: null, PassPhrase);
+            _ = new AsymmetricCryptoClientBouncyCastle(
+                    keyPublic: null, 
+                    keyPrivate: null, 
+                    PassPhrase
+            );
         }
 
         [TestMethod]
@@ -99,7 +105,7 @@ namespace BlitzkriegSoftware.Test.AsymmetricCrypto
         [ExpectedException(typeof(ArgumentNullException))]
         public void BadEncrypt1()
         {
-            using (AsymmetricCryptoClientBouncyCastle cg = new(PrivateKey, PassPhrase))
+            using (AsymmetricCryptoClientBouncyCastle cg = new(PublicKey, PrivateKey, PassPhrase))
             {
                 _ = cg.Encrypt(null);
             }
@@ -107,23 +113,21 @@ namespace BlitzkriegSoftware.Test.AsymmetricCrypto
 
         [TestMethod]
         [TestCategory("Unit")]
-        [ExpectedException(typeof(System.ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(System.ArgumentNullException))]
         public void BadEncrypt2()
         {
-            using (AsymmetricCryptoClientBouncyCastle cg = new("this is not a RSA Private Key", PassPhrase))
+            using (AsymmetricCryptoClientBouncyCastle cg = new(null, "this is not a RSA Private Key", PassPhrase))
             {
-
             }
         }
 
         [TestMethod]
         [TestCategory("Unit")]
-        [ExpectedException(typeof(System.Security.Cryptography.CryptographicException))]
+        [ExpectedException(typeof(System.ArgumentNullException))]
         public void BadEncrypt3()
         {
-            using (AsymmetricCryptoClientBouncyCastle cg = new ($"this is{Environment.NewLine} not a{Environment.NewLine} RSA Private Key", PassPhrase))
+            using (AsymmetricCryptoClientBouncyCastle cg = new(null, $"this is{Environment.NewLine} not a{Environment.NewLine} RSA Private Key", PassPhrase))
             {
-
             }
         }
 
@@ -132,7 +136,7 @@ namespace BlitzkriegSoftware.Test.AsymmetricCrypto
         [ExpectedException(typeof(ArgumentNullException))]
         public void BadDecrypt1()
         {
-            using (AsymmetricCryptoClientBouncyCastle cg = new(PrivateKey, PassPhrase))
+            using (AsymmetricCryptoClientBouncyCastle cg = new(PublicKey, PrivateKey, PassPhrase))
             {
                 _ = cg.Decrypt(null);
             }
@@ -140,11 +144,11 @@ namespace BlitzkriegSoftware.Test.AsymmetricCrypto
 
         [TestMethod]
         [TestCategory("Unit")]
-        [ExpectedException(typeof(System.ArgumentNullException))]
+        [ExpectedException(typeof(System.ArgumentException))]
         public void BadDecrypt2()
         {
             var cipherText = "This is not ciphered text";
-            using (AsymmetricCryptoClientBouncyCastle cg = new(PrivateKey, PassPhrase))
+            using (AsymmetricCryptoClientBouncyCastle cg = new(PublicKey, PrivateKey, PassPhrase))
             {
                 _ = cg.Decrypt(cipherText);
             }
@@ -152,10 +156,10 @@ namespace BlitzkriegSoftware.Test.AsymmetricCrypto
 
         [TestMethod]
         [TestCategory("Unit")]
-        [ExpectedException(typeof(System.ArgumentNullException))]
+        [ExpectedException(typeof(System.ArgumentException))]
         public void BadDecrypt3()
         {
-            using (AsymmetricCryptoClientBouncyCastle cg = new(PrivateKey, PassPhrase))
+            using (AsymmetricCryptoClientBouncyCastle cg = new(PublicKey, PrivateKey, PassPhrase))
             {
                 var cipherText = Convert.ToBase64String(cg.ByteConverter.GetBytes("This is not ciphered text"));
                 _ = cg.Decrypt(cipherText);

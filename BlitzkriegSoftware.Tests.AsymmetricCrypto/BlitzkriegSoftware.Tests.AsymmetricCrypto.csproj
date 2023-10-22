@@ -38,6 +38,9 @@
 		<Content Include="..\private.pgp.txt" Link="private.pgp.txt">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
+		<Content Include="..\public.pgp.txt" Link="public.pgp.txt">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Include="favicon_32x32.ico" />
 	</ItemGroup>
 
@@ -69,7 +72,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="PgpCore" Version="5.10.0" />
+		<PackageReference Include="PgpCore" Version="5.13.0" />
 	</ItemGroup>
 
 	<ItemGroup>
